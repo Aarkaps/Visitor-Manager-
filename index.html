@@ -1476,8 +1476,8 @@ dd.fl-dd{color:#ffb3b0;font-weight:600}
       <sc-if value="{{ wv.alerts }}" hint-placeholder-val="{{ true }}">
       <section class="{{ sec.alerts.cls }}{{ wo.alerts_c }}" style="order: {{ wo.alerts }}" aria-labelledby="h-alerts">
         <div class="ph">
-          <h2 id="h-alerts"><span class="ph-title">Security Alerts</span></h2><span class="cnt">{{ alertCount }}</span><span class="tag-prop">Proposed</span>
-          <button class="tip" type="button" aria-label="Overdue and missing check-out alerts come from visit data. Other alert types need platform support and are shown as samples." data-tip="Overdue and missing check-out alerts come from visit data. Other alert types need platform support and are shown as samples.">i</button>
+          <h2 id="h-alerts"><span class="ph-title">Security Alerts</span></h2><span class="cnt">{{ alertCount }}</span><span class="tag-new">New</span>
+          <button class="tip" type="button" aria-label="Alerts are raised from visit data (overdue, missing check-out, 5 or more check-ins by one visitor in 24 hours), visitor flags (flagged visitor on-site) and check-in records (host not recorded when Host is required at check-in). Acknowledge an alert once it has been handled." data-tip="Alerts are raised from visit data (overdue, missing check-out, 5 or more check-ins by one visitor in 24 hours), visitor flags (flagged visitor on-site) and check-in records (host not recorded when Host is required at check-in). Acknowledge an alert once it has been handled.">i</button>
           <sc-if value="{{ sec.alerts.open }}" hint-placeholder-val="{{ false }}">
           <div class="r">
             <label class="fld sm"><select value="{{ alertType }}" onChange="{{ onAlertType }}" aria-label="Alert type"><option value="all">All alert types</option><sc-for list="{{ alertTypes }}" as="at" hint-placeholder-count="5"><option value="{{ at.v }}">{{ at.l }}</option></sc-for></select></label>
@@ -1508,6 +1508,7 @@ dd.fl-dd{color:#ffb3b0;font-weight:600}
             </table></div>
           </sc-if>
           <sc-if value="{{ noAlerts }}" hint-placeholder-val="{{ false }}"><div class="empty"><b>No alerts</b>Nothing matches the selected alert type and severity.</div></sc-if>
+          <p class="mut" style="font-size: 12.5px; margin: 10px 2px 0">{{ alertRoute }} Change this in Settings › User Roles › Custom Visitor Manager Settings.</p>
         </div>
         </sc-if>
       </section>
@@ -1754,7 +1755,7 @@ dd.fl-dd{color:#ffb3b0;font-weight:600}
 
       <sc-if value="{{ wv.none }}" hint-placeholder-val="{{ false }}"><p class="mw-empty">No widgets enabled. Please enable at least one widget to see data on screen.</p></sc-if>
       <sc-if value="{{ wv.some }}" hint-placeholder-val="{{ true }}">
-      <p class="foot">Prototype · sample data only · <span class="tag-new">New</span> added by this proposal · <span class="tag-prop">Proposed</span> needs product confirmation · Times shown in your time zone (post-site time zones pending confirmation) · Check-ins and check-outs count visits; Unique Visitors counts people</p>
+      <p class="foot">Prototype · sample data only · <span class="tag-new">New</span> added by this proposal · Times shown in your time zone (post-site time zones pending confirmation) · Check-ins and check-outs count visits; Unique Visitors counts people</p>
       </sc-if>
 
       </sc-if>
@@ -2136,7 +2137,7 @@ dd.fl-dd{color:#ffb3b0;font-weight:600}
         <div class="rgrid">
           <sc-for list="{{ reportCards }}" as="rc" hint-placeholder-count="7">
             <div class="rcard">
-              <div style="display: flex; gap: 10px; align-items: center"><b>{{ rc.title }}</b><sc-if value="{{ rc.prop }}" hint-placeholder-val="{{ false }}"><span class="tag-prop">Proposed</span></sc-if></div>
+              <div style="display: flex; gap: 10px; align-items: center"><b>{{ rc.title }}</b><sc-if value="{{ rc.prop }}" hint-placeholder-val="{{ false }}"><span class="tag-new">New</span></sc-if></div>
               <p>{{ rc.desc }}</p>
               <div style="display: flex; gap: 10px; align-items: center; margin-top: auto"><button class="act pri" type="button" onClick="{{ rc.run }}">Run report</button><span class="mut">{{ rc.formats }}</span></div>
             </div>
@@ -2257,7 +2258,7 @@ dd.fl-dd{color:#ffb3b0;font-weight:600}
               </div>
             </section>
             <section class="panel">
-              <div class="ph"><h2>Alerts &amp; notifications</h2><span class="tag-prop">Proposed</span></div>
+              <div class="ph"><h2>Alerts &amp; notifications</h2><span class="tag-new">New</span></div>
               <div class="pb sform">
                 <label class="lf">Send overdue alerts to
                   <select class="sel" value="{{ sd.alertTo }}" onChange="{{ setSel.alertTo }}"><option value="sup">Site supervisors</option><option value="ops">Operations managers</option><option value="both">Supervisors and operations managers</option><option value="none">Nobody (dashboard only)</option></select>
@@ -2656,7 +2657,7 @@ dd.fl-dd{color:#ffb3b0;font-weight:600}
     </div>
     <sc-if value="{{ resolving }}" hint-placeholder-val="{{ false }}">
       <div class="form">
-        <div style="display: flex; gap: 8px; align-items: center"><b style="color: #fff; font-weight: 600">Resolve overdue record</b><span class="tag-prop">Proposed</span></div>
+        <div style="display: flex; gap: 8px; align-items: center"><b style="color: #fff; font-weight: 600">Resolve overdue record</b><span class="tag-new">New</span></div>
         <label>Actual check-out time (today) *<input id="resTime" type="time" value="{{ res.time }}" onChange="{{ res.onTime }}" aria-invalid="{{ res.hasErr }}"></label>
         <sc-if value="{{ res.hasErr }}" hint-placeholder-val="{{ false }}"><span class="field-err" role="alert">{{ res.err }}</span></sc-if>
         <label>Reason *<select value="{{ res.reason }}" onChange="{{ res.onReason }}">
@@ -3013,6 +3014,56 @@ function render() {
   if (id) { var el = document.getElementById(id); if (el) { el.focus({ preventScroll: true }); try { if (s0 != null) el.setSelectionRange(s0, s1); } catch (e) {} } }
 }
 
+
+var GPX = (function () {
+  function esc(x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  var CSS = 'body{font-family:Segoe UI,Arial,sans-serif;color:#111;margin:24px;font-size:12px}h1{font-size:20px;margin:0 0 4px}h2{font-size:14px;margin:18px 0 6px;padding-bottom:4px;border-bottom:2px solid #1e3a5f}.meta{color:#555;margin:0 0 12px}table{width:100%;border-collapse:collapse;margin-bottom:6px}th,td{border:1px solid #bbb;padding:5px 7px;text-align:left;vertical-align:top}th{background:#e8eef6}.ck{width:28px}.od{color:#b00020;font-weight:600}.foot{margin-top:18px;color:#555;font-size:11px}@page{size:A4;margin:14mm}';
+  function printHTML(title, body) {
+    var html = '<!doctype html><html><head><meta charset="utf-8"><title>' + esc(title) + '</title><style>' + CSS + '</style></head><body>' + body + '</body></html>';
+    var old = document.getElementById('gpx-print'); if (old) old.remove();
+    var f = document.createElement('iframe'); f.id = 'gpx-print';
+    f.setAttribute('aria-hidden', 'true'); f.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden';
+    document.body.appendChild(f);
+    var d = f.contentWindow.document; d.open(); d.write(html); d.close();
+    setTimeout(function () { try { f.contentWindow.focus(); f.contentWindow.print(); } catch (e) { var w = window.open('', '_blank'); if (w) { w.document.write(html); w.document.close(); w.print(); } } }, 250);
+  }
+  function download(name, mime, text) {
+    var blob = new Blob([text], { type: mime }), url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = name; document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1000);
+  }
+  function tableHTML(cols, rows) {
+    return '<table><thead><tr>' + cols.map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + esc(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>';
+  }
+  function csv(cols, rows) {
+    var q = function (x) { x = String(x == null ? '' : x); return /[",\n]/.test(x) ? '"' + x.replace(/"/g, '""') + '"' : x; };
+    return '﻿' + [cols].concat(rows).map(function (r) { return r.map(q).join(','); }).join('\r\n');
+  }
+  function slug(t) { return t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+  function report(title, sub, cols, rows, fmt) {
+    var stamp = new Date().toISOString().slice(0, 10), base = 'visitor-manager-' + slug(title) + '-' + stamp;
+    if (fmt === 'CSV') download(base + '.csv', 'text/csv;charset=utf-8', csv(cols, rows));
+    else if (fmt === 'Excel') download(base + '.xls', 'application/vnd.ms-excel', '<html><head><meta charset="utf-8"></head><body><h3>' + esc(title) + '</h3><p>' + esc(sub) + '</p>' + tableHTML(cols, rows) + '</body></html>');
+    else printHTML(title, '<h1>' + esc(title) + '</h1><p class="meta">' + esc(sub) + '</p>' + tableHTML(cols, rows) + '<p class="foot">GuardsPro · Visitor Manager · ' + rows.length + ' rows</p>');
+  }
+  function roster(visits, scopeTxt) {
+    var g = {}, order = [];
+    visits.forEach(function (v) { if (!g[v.siteId]) { g[v.siteId] = []; order.push(v.siteId); } g[v.siteId].push(v); });
+    order.sort(function (a, b) { return g[a][0].siteName < g[b][0].siteName ? -1 : 1; });
+    var now = new Date(), gen = now.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) + ' ' + now.toTimeString().slice(0, 5);
+    var body = '<h1>Emergency roster – people recorded on-site</h1><p class="meta">Generated ' + esc(gen) + ' · ' + visits.length + ' people · ' + order.length + ' post sites' + (scopeTxt ? ' · ' + esc(scopeTxt) : '') + '<br>An operational record from check-in data, not a guarantee of physical presence. Tick each person as they are accounted for.</p>';
+    order.forEach(function (id) {
+      var L = g[id];
+      body += '<h2>' + esc(L[0].siteName) + ' · ' + esc(L[0].clientName) + ' (' + L.length + ')</h2><table><thead><tr><th class="ck">✓</th><th>Visitor</th><th>Type</th><th>Checked in</th><th>Expected out</th><th>Vehicle</th><th>Phone</th></tr></thead><tbody>' +
+        L.map(function (v) { var st = GP.status(v), od = st === 'overdue' || st === 'missing';
+          return '<tr><td class="ck">☐</td><td>' + esc(v.p.name) + '</td><td>' + esc(v.p.type) + '</td><td>' + esc(GP.stamp(v.inT)) + '</td><td' + (od ? ' class="od"' : '') + '>' + esc(v.expT != null ? GP.stamp(v.expT) : 'Not set') + (od ? ' (' + (st === 'missing' ? 'missing check-out' : 'overdue') + ')' : '') + '</td><td>' + esc(v.p.vehicle ? v.p.vehicle.plate : '—') + '</td><td>' + esc(v.p.phone || '—') + '</td></tr>'; }).join('') + '</tbody></table>';
+    });
+    if (!visits.length) body += '<p>No one is recorded on-site.</p>';
+    printHTML('Emergency roster', body);
+  }
+  return { printHTML: printHTML, download: download, report: report, roster: roster };
+})();
 
 var GP = (function () {
   // "Today" follows the viewer's real date and clock (time kept between 10:00 AM and 9:30 PM so the demo day always has activity)
@@ -3520,12 +3571,24 @@ class Component extends DCLogic {
         source: 'From visit data'
       };
     });
-    var guestOn = onsiteAll.filter(function (v) { return v.p.type === 'Guest' && v.inT >= 0; })[0];
-    if (guestOn) alertsAll.push({ id: 'al-inc', vId: guestOn.id, type: 'Incomplete visitor details', sev: 'Low', who: guestOn.p.name, detail: 'company and ID number missing', client: guestOn.clientName, site: guestOn.siteName, time: GP.stamp(guestOn.inT), t: guestOn.inT, source: 'Sample · needs new capability' });
-    var kioskV = cur.ins.filter(function (v) { return v.method === 'Self'; })[0];
-    if (kioskV) alertsAll.push({ id: 'al-rep', vId: kioskV.id, type: 'Repeated check-in attempts', sev: 'Medium', who: kioskV.p.name, detail: '3 kiosk attempts in 5 min', client: kioskV.clientName, site: kioskV.siteName, time: GP.stamp(kioskV.inT - 4), t: kioskV.inT - 4, source: 'Sample · needs new capability' });
+    var STA = s.settings || {};
+    var ahs = function (str) { var h = 0; for (var i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) | 0; return Math.abs(h); };
+    if (STA.rHost !== false) onsiteAll.forEach(function (v) {
+      var hasHost = v.fromCI ? !!(v.meet || '').trim() : ahs(v.id) % 6 !== 1;
+      if (hasHost) return;
+      alertsAll.push({ id: 'al-inc-' + v.id, vId: v.id, type: 'Incomplete visitor details', sev: 'Low', who: v.p.name, detail: 'host / person to meet not recorded at check-in', client: v.clientName, site: v.siteName, time: GP.stamp(v.inT), t: v.inT, source: 'From check-in record' });
+    });
+    var repMap = {};
+    V.forEach(function (v) { if (v.inT != null && v.inT > NOW - 1440 && v.inT <= NOW) (repMap[v.vid] = repMap[v.vid] || []).push(v); });
+    Object.keys(repMap).forEach(function (k) {
+      var g = repMap[k]; if (g.length < 5) return;
+      g.sort(function (a, b) { return b.inT - a.inT; });
+      var sites = {}; g.forEach(function (v) { sites[v.siteName] = 1; });
+      var ns = Object.keys(sites).length;
+      alertsAll.push({ id: 'al-rep-' + k, vId: g[0].id, type: 'Repeated check-ins', sev: g.length >= 7 || ns > 2 ? 'Medium' : 'Low', who: g[0].p.name, detail: g.length + ' check-ins in the last 24 hours' + (ns > 1 ? ' at ' + ns + ' post sites' : ''), client: g[0].clientName, site: g[0].siteName, time: GP.stamp(g[0].inT), t: g[0].inT, source: 'From visit data' });
+    });
     var FLGS = s.flags || {};
-    onsiteAll.forEach(function (v) { var f = FLGS[v.vid]; if (!f) return; alertsAll.push({ id: 'al-flag-' + v.id, vId: v.id, type: 'Flagged visitor on-site', sev: f.blocked ? 'High' : 'Medium', who: v.p.name, detail: f.reason + (f.blocked ? ' · blocked visitor' : ''), client: v.clientName, site: v.siteName, time: GP.stamp(v.inT), t: v.inT, source: 'From visitor flags · proposed' }); });
+    onsiteAll.forEach(function (v) { var f = FLGS[v.vid]; if (!f) return; alertsAll.push({ id: 'al-flag-' + v.id, vId: v.id, type: 'Flagged visitor on-site', sev: f.blocked ? 'High' : 'Medium', who: v.p.name, detail: f.reason + (f.blocked ? ' · blocked visitor' : ''), client: v.clientName, site: v.siteName, time: GP.stamp(v.inT), t: v.inT, source: 'From visitor flags' }); });
     var sevRank = { High: 0, Medium: 1, Low: 2 };
     alertsAll.sort(function (a, b) { return (sevRank[a.sev] - sevRank[b.sev]) || (b.t - a.t); });
     var alertsF = alertsAll.filter(function (a) { return (s.alertSev === 'all' || a.sev === s.alertSev) && (s.alertType === 'all' || a.type === s.alertType); });
@@ -3533,9 +3596,9 @@ class Component extends DCLogic {
       var acked = !!s.ack[a.id];
       return Object.assign({}, a, {
         cls: 'al' + (acked ? ' acked' : ''), sevCls: sevChip(a.sev),
-        ackTxt: acked ? 'Acknowledged' : 'Acknowledge', acked: acked, status: acked ? 'Acknowledged' : 'Open', statusCls: 'chip ' + (acked ? 'c-grey' : 'c-blue'), isSample: /Sample|proposed/i.test(a.source),
+        ackTxt: acked ? 'Acknowledged' : 'Acknowledge', acked: acked, status: acked ? 'Acknowledged' : 'Open', statusCls: 'chip ' + (acked ? 'c-grey' : 'c-blue'),
         open: function () { self.setState({ sel: a.vId, resolving: false }); },
-        ack: function () { if (self.state.ack[a.id]) return; var n = Object.assign({}, self.state.ack); n[a.id] = true; self.setState({ ack: n }); self.flash('Alert acknowledged (prototype)'); }
+        ack: function () { if (self.state.ack[a.id]) return; var n = Object.assign({}, self.state.ack); n[a.id] = true; self.setState({ ack: n }); self.flash(a.type + ' alert for ' + a.who + ' acknowledged'); }
       });
     });
     var sevBtns = ['all', 'High', 'Medium', 'Low'].map(function (x) { return { l: x === 'all' ? 'All' : x, on: s.alertSev === x, cls: 'seg-btn' + (s.alertSev === x ? ' on' : ''), pick: function () { self.setState({ alertSev: x }); } }; });
@@ -3608,7 +3671,7 @@ class Component extends DCLogic {
         if (t < selV.inT) { self.setState({ resErr: 'Check-out time is before the check-in time.' }); return; }
         var n = Object.assign({}, self.state.resolved); n[selV.id] = { outT: t, by: 'Kapil · manual correction', reason: self.state.resReason, note: self.state.resNote };
         self.setState({ resolved: n, resolving: false, resErr: '' });
-        self.flash('Visit ' + selV.ref + ' checked out · audit entry created (prototype)');
+        self.flash('Visit ' + selV.ref + ' checked out · resolved with reason recorded');
       }
     };
 
@@ -3948,11 +4011,12 @@ class Component extends DCLogic {
       },
       showOsList: !s.osRoster, showRoster: s.osRoster,
       onsiteRows: onsiteSorted.slice(0, 5).map(rowOf), onsiteShown: Math.min(5, onsiteAll.length), hasOnsite: onsiteAll.length > 0, noOnsite: onsiteAll.length === 0,
-      roster: roster, rosterSites: roster.length, printRoster: function () { self.flash('Print roster is proposed and not available in this prototype'); },
+      roster: roster, rosterSites: roster.length, printRoster: function () { GPX.roster(onsiteSorted, 'Overview filters'); self.flash('Emergency roster ready to print · ' + onsiteSorted.length + ' people'); },
       attnRows: attnAll.slice(0, 6).map(rowOf), hasAttn: attnAll.length > 0, noAttn: attnAll.length === 0,
+      alertRoute: ({ sup: 'Overdue and missing check-out alerts are also sent to the site supervisors of the post site.', ops: 'Overdue and missing check-out alerts are also sent to operations managers.', both: 'Overdue and missing check-out alerts are also sent to site supervisors and operations managers.', none: 'Alerts are shown on this dashboard only.' })[(s.settings || {}).alertTo || 'sup'] || 'Alerts are shown on this dashboard only.',
       alerts: alerts, alertCount: alertsAll.length, noAlerts: alerts.length === 0, hasAlerts: alerts.length > 0, sevBtns: sevBtns,
       alertType: s.alertType, onAlertType: function (e) { self.setState({ alertType: e.target.value }); },
-      alertTypes: ['Overdue visitor', 'Missing check-out', 'Flagged visitor on-site', 'Repeated check-in attempts', 'Incomplete visitor details'].map(function (t) { return { v: t, l: t + ' (' + alertsAll.filter(function (a) { return a.type === t; }).length + ')' }; }),
+      alertTypes: ['Overdue visitor', 'Missing check-out', 'Flagged visitor on-site', 'Repeated check-ins', 'Incomplete visitor details'].map(function (t) { return { v: t, l: t + ' (' + alertsAll.filter(function (a) { return a.type === t; }).length + ')' }; }),
       sec: (function () {
         var o = {};
         [['desk', 'panel'], ['attn', 'panel'], ['alerts', 'panel'], ['act', 'panel'], ['ins_types', 'panel ins'], ['ins_trend', 'panel ins'], ['ins_peak', 'panel ins'], ['ins_method', 'panel ins'], ['sites', 'panel'], ['veh', 'panel']].forEach(function (x) {
@@ -4368,7 +4432,7 @@ class Component extends DCLogic {
           { l: 'Company', v: x.company || '' },
           { l: 'Time-In Note', v: v.fromCI ? v.inNote : (h % 3 === 0 ? INN[h % 4] + (h % 4 === 0 ? (100 + h % 900) : '') : '') },
           { l: 'Time-Out Note', v: v.outT == null ? '' : v.resolved ? (v.resolved.note || '') : (h % 4 === 1 ? OUTN[h % 4] : '') },
-          { l: 'Person To Meet', v: v.fromCI ? v.meet : (h % 2 === 0 ? MEET[h % MEET.length] : '') },
+          { l: 'Person To Meet', v: v.fromCI ? v.meet : (h % 6 !== 1 ? MEET[h % MEET.length] : '') },
           { l: 'Reason For Visit', v: v.fromCI ? v.reason : (h % 5 !== 0 ? REAS[h % REAS.length] : '') },
           { l: 'Location', v: v.fromCI ? v.location : (h % 3 !== 1 ? LOCS[h % LOCS.length] : '') },
           { l: 'Visitor Type', v: x.type, isNew: true },
@@ -4617,7 +4681,7 @@ class Component extends DCLogic {
     if (view === 'active') {
       pg.title = 'Active Visitors'; pg.backOv = true; pg.searchPh = 'Search visitor, post site or plate';
       pg.about = 'New: everyone currently checked in across your authorized sites, including visits that started on earlier days. Use the roster view during emergencies.';
-      pg.hasPrimary = true; pg.primaryLbl = 'Print roster'; pg.primaryIcon = 'M6 9V3h12v6 M6 18H4v-7h16v7h-2 M8 14h8v7H8z'; pg.primary = function () { flashC('Print roster is proposed and not available in this prototype'); };
+      pg.hasPrimary = true; pg.primaryLbl = 'Print roster'; pg.primaryIcon = 'M6 9V3h12v6 M6 18H4v-7h16v7h-2 M8 14h8v7H8z'; pg.primary = function () { GPX.roster(fa, ({ all: 'All active', overdue: 'Overdue', due: 'Due soon', noeta: 'No expected time' })[tab] || ''); flashC('Emergency roster ready to print · ' + fa.length + ' people'); };
       var al = E.filter(function (v) { return v.outT == null; });
       if (q) al = al.filter(function (v) { return v.p.name.toLowerCase().indexOf(q) >= 0 || v.siteName.toLowerCase().indexOf(q) >= 0 || (v.p.vehicle && v.p.vehicle.plate.toLowerCase().indexOf(q) >= 0); });
       var rk = function (v) { var st = GP.status(v); return (st === 'overdue' || st === 'missing') ? 0 : st === 'due' ? 1 : 2; };
@@ -5075,7 +5139,7 @@ class Component extends DCLogic {
       ['overdue', 'Overdue and missing check-outs', 'Active visits past their expected check-out, longest first.', false],
       ['sites', 'Traffic by post site', 'Visitor volume and average visit length per post site.', false],
       ['vehicles', 'Vehicle log', 'Vehicles linked to visits, with arrival times.', false],
-      ['invites', 'Invitations', 'Invitations by status, visit date and host.', true],
+      ['invites', 'Invitations', 'Invitations by status, visit date and host.', false],
       ['roster', 'Emergency roster', 'Everyone currently recorded on-site, grouped by post site.', false]
     ];
     if (view === 'reports') {
@@ -5127,7 +5191,7 @@ class Component extends DCLogic {
         cols: cols, rows: rows.slice(0, 6).map(function (r) { return { cells: r }; }), hasRows: rows.length > 0, noRows: rows.length === 0, countTxt: rows.length + ' rows',
         onRange: function (e) { self.setState({ repRange: e.target.value }); }, onClient: function (e) { self.setState({ repClient: e.target.value }); }, onFmt: function (e) { self.setState({ repFmt: e.target.value }); },
         close: function () { self.setState({ repId: null }); },
-        download: function () { flashC(R[1] + ' · ' + rows.length + ' rows downloaded as ' + self.state.repFmt + ' (prototype, no file created)'); }
+        download: function () { var fm = self.state.repFmt, rl2 = live ? 'Live' : ({ today: 'Today', '7d': 'Last 7 days', '30d': 'Last 30 days' })[self.state.repRange] || self.state.repRange; GPX.report(R[1], rl2 + ' · ' + (self.state.repClient === 'all' ? 'All authorized clients' : (out.clientOpts.filter(function (c) { return c.id === self.state.repClient; })[0] || {}).l) + ' · ' + rows.length + ' rows', cols, rows, fm); flashC(fm === 'PDF' ? R[1] + ' ready to print or save as PDF' : R[1] + ' · ' + rows.length + ' rows downloaded as ' + fm); }
       };
     } else out.rep = { cols: [], rows: [] };
 
